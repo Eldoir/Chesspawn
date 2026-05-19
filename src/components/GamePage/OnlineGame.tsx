@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Alert, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useOnlineGame } from '../../hooks/useOnlineGame';
 import type { Color } from '../../types/game';
 import GameView from './GameView';
@@ -12,6 +13,7 @@ interface OnlineGameProps {
 const OnlineGame: React.FC<OnlineGameProps> = ({ gameId, myColor }) => {
   const { state, placePiece, makeChessMove, legalSquares, syncing, error, isMyTurn } =
     useOnlineGame(gameId, myColor);
+  const { t } = useTranslation();
 
   const [ready, setReady] = useState(false);
 
@@ -49,7 +51,7 @@ const OnlineGame: React.FC<OnlineGameProps> = ({ gameId, myColor }) => {
             variant="caption"
             sx={{ color: 'text.secondary', display: 'flex', alignItems: 'center', gap: 1 }}
           >
-            <CircularProgress size={12} /> Waiting for opponent…
+            <CircularProgress size={12} /> {t('game.waitingOpponent')}
           </Typography>
         </Box>
       )}

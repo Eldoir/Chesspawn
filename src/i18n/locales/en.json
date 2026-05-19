@@ -1,0 +1,51 @@
+{
+  "home": {
+    "subtitle": "Draft your army. Then play.",
+    "playLocal": "Play Local",
+    "normalMode": "Normal mode (skip draft)",
+    "host": "Host",
+    "creating": "Creating game…",
+    "gameIdPlaceholder": "GAME ID",
+    "join": "Join",
+    "rememberGame": "Remember this game",
+    "invalidId": "Invalid game ID.",
+    "gameNotFound": "Game not found. Check the ID and try again.",
+    "connectionError": "Connection error. Please try again.",
+    "language": "Language"
+  },
+  "game": {
+    "draftPhase": "Draft Phase",
+    "chessPhase": "Chess Phase",
+    "gameOver": "Game Over",
+    "syncing": "Syncing…",
+    "moveCount": "Move {{count}}",
+    "home": "← Home",
+    "white": "White",
+    "black": "Black",
+    "actionPlaceKing": "place the King",
+    "actionPlacePiece": "place a piece",
+    "draftStatusLocal": "{{color}}'s turn — {{action}}",
+    "draftStatusMine": "Your turn — {{action}}",
+    "draftStatusOpponent": "Opponent's turn — {{action}}",
+    "chessTurnLocal": "{{color}}'s turn",
+    "chessTurnMine": "Your turn",
+    "chessTurnOpponent": "Opponent's turn",
+    "draw": "Draw!",
+    "winsLocal": "{{color}} wins{{reason}}",
+    "winsMine": "You win{{reason}}",
+    "winsOpponent": "Opponent wins{{reason}}",
+    "reasonKingBlocked": " — King blocked!",
+    "reasonCheckmate": " — Checkmate!",
+    "yourTurnIndicator": "— your turn",
+    "waitingOpponent": "Waiting for opponent…",
+    "syncFailed": "Sync failed",
+    "pieces": {
+      "k": "King",
+      "q": "Queen",
+      "r": "Rook",
+      "b": "Bishop",
+      "n": "Knight",
+      "p": "Pawn"
+    }
+  }
+}

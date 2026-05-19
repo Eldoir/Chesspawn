@@ -174,13 +174,3 @@ export function buildChessFromPlacements(placements: PlacedPiece[]): Chess {
   chess.load(`${board} w - - 0 1`);
   return chess;
 }
-
-/** Standard piece label for display */
-export const PIECE_LABELS: Record<PieceType, string> = {
-  k: 'King',
-  q: 'Queen',
-  r: 'Rook',
-  b: 'Bishop',
-  n: 'Knight',
-  p: 'Pawn',
-};

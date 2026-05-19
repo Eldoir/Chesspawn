@@ -1,0 +1,51 @@
+{
+  "home": {
+    "subtitle": "Composez votre armée. Puis jouez.",
+    "playLocal": "Jouer en local",
+    "normalMode": "Mode normal (sans draft)",
+    "host": "Héberger",
+    "creating": "Création…",
+    "gameIdPlaceholder": "ID DE PARTIE",
+    "join": "Rejoindre",
+    "rememberGame": "Se souvenir de cette partie",
+    "invalidId": "ID de partie invalide.",
+    "gameNotFound": "Partie introuvable. Vérifiez l'ID et réessayez.",
+    "connectionError": "Erreur de connexion. Veuillez réessayer.",
+    "language": "Langue"
+  },
+  "game": {
+    "draftPhase": "Phase de draft",
+    "chessPhase": "Phase d'échecs",
+    "gameOver": "Partie terminée",
+    "syncing": "Synchronisation…",
+    "moveCount": "Coup {{count}}",
+    "home": "← Accueil",
+    "white": "Blancs",
+    "black": "Noirs",
+    "actionPlaceKing": "placez le Roi",
+    "actionPlacePiece": "placez une pièce",
+    "draftStatusLocal": "Tour des {{color}} — {{action}}",
+    "draftStatusMine": "Votre tour — {{action}}",
+    "draftStatusOpponent": "Tour de l'adversaire — {{action}}",
+    "chessTurnLocal": "Tour des {{color}}",
+    "chessTurnMine": "Votre tour",
+    "chessTurnOpponent": "Tour de l'adversaire",
+    "draw": "Égalité !",
+    "winsLocal": "{{color}} gagne {{reason}}",
+    "winsMine": "Vous gagnez {{reason}}",
+    "winsOpponent": "L'adversaire gagne {{reason}}",
+    "reasonKingBlocked": " — Roi bloqué !",
+    "reasonCheckmate": " — Échec et mat !",
+    "yourTurnIndicator": "— votre tour",
+    "waitingOpponent": "En attente de l'adversaire…",
+    "syncFailed": "Synchronisation échouée",
+    "pieces": {
+      "k": "Roi",
+      "q": "Reine",
+      "r": "Tour",
+      "b": "Fou",
+      "n": "Cavalier",
+      "p": "Pion"
+    }
+  }
+}

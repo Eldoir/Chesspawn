@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import type { Color, PieceType } from '../../types/game';
-import { PIECE_LABELS } from '../../engine/chesspawn';
 import PieceIcon from './PieceIcon';
 
 interface DraftPanelProps {
@@ -26,6 +26,7 @@ const DraftPanel: React.FC<DraftPanelProps> = ({
   kingPlaced,
   label,
 }) => {
+  const { t } = useTranslation();
   // Count pieces in pool
   const counts = pool.reduce<Record<string, number>>((acc, p) => {
     acc[p] = (acc[p] ?? 0) + 1;
@@ -56,7 +57,7 @@ const DraftPanel: React.FC<DraftPanelProps> = ({
           display: 'block',
         }}
       >
-        {label} {isActive ? '— your turn' : ''}
+        {label} {isActive ? t('game.yourTurnIndicator') : ''}
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
         {pieces.map((p) => {
@@ -65,7 +66,7 @@ const DraftPanel: React.FC<DraftPanelProps> = ({
           return (
             <Tooltip
               key={p}
-              title={`${PIECE_LABELS[p]}${count > 1 ? ` ×${count}` : ''}`}
+              title={`${t(`game.pieces.${p}`)}${count > 1 ? ` ×${count}` : ''}`}
               placement="top"
             >
               <Box

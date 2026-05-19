@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Color, GameState, PieceType, Square } from '../types/game';
 import { useGame } from './useGame';
 import { createGame, fetchGame, updateGame, generateGameId } from '../api/gameApi';
@@ -9,6 +10,7 @@ const POLL_INTERVAL = 1000;
 export function useOnlineGame(gameId: string, myColor: Color) {
   const { state, placePiece, makeChessMove, loadState, legalSquares } =
     useGame(createInitialGameState());
+  const { t } = useTranslation();
   const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lastFenRef = useRef<string>('');
@@ -70,7 +72,7 @@ export function useOnlineGame(gameId: string, myColor: Color) {
 
     setSyncing(true);
     updateGame(gameId, state)
-      .catch(() => setError('Sync failed'))
+      .catch(() => setError(t('game.syncFailed')))
       .finally(() => setSyncing(false));
   }, [state, gameId]);
 

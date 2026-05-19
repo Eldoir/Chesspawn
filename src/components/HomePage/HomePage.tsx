@@ -10,11 +10,15 @@ import {
   Alert,
   Divider,
   CircularProgress,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AnimatedBoard from './AnimatedBoard';
 import { generateGameId, createGame, checkGameExists } from '../../api/gameApi';
 import { createInitialGameState } from '../../engine/chesspawn';
+import { LS_LANG_KEY } from '../../i18n';
 
 const GAME_ID_RE = /^[A-Z0-9]{6}$/;
 const LS_GAME_KEY = 'chesspawn_last_game';
@@ -23,6 +27,7 @@ const LS_COLOR_KEY = 'chesspawn_last_color';
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { t, i18n } = useTranslation();
 
   const [joinId, setJoinId] = useState('');
   const [remember, setRemember] = useState(false);
@@ -37,6 +42,12 @@ const HomePage: React.FC = () => {
     const val = e.target.checked;
     setNormalMode(val);
     localStorage.setItem('chesspawn_mode', val ? 'normal' : 'draft');
+  };
+
+  const handleLanguageChange = (_: React.MouseEvent<HTMLElement>, lang: string | null) => {
+    if (!lang) return;
+    i18n.changeLanguage(lang);
+    localStorage.setItem(LS_LANG_KEY, lang);
   };
 
   // Pre-fill from ?join= param
@@ -92,7 +103,7 @@ const HomePage: React.FC = () => {
   const handleJoin = async () => {
     const id = joinId.trim().toUpperCase();
     if (!GAME_ID_RE.test(id)) {
-      setJoinError('Invalid game ID.');
+      setJoinError(t('home.invalidId'));
       return;
     }
     setJoining(true);
@@ -100,7 +111,7 @@ const HomePage: React.FC = () => {
     try {
       const exists = await checkGameExists(id);
       if (!exists) {
-        setJoinError('Game not found. Check the ID and try again.');
+        setJoinError(t('home.gameNotFound'));
         return;
       }
       if (remember) {
@@ -112,7 +123,7 @@ const HomePage: React.FC = () => {
       }
       navigate(`/online/${id}/b`);
     } catch {
-      setJoinError('Connection error. Please try again.');
+      setJoinError(t('home.connectionError'));
     } finally {
       setJoining(false);
     }
@@ -160,6 +171,34 @@ const HomePage: React.FC = () => {
           width: '100%',
         }}
       >
+        {/* Language switcher */}
+        <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+          <ToggleButtonGroup
+            value={i18n.language}
+            exclusive
+            onChange={handleLanguageChange}
+            size="small"
+            sx={{
+              '& .MuiToggleButton-root': {
+                px: 1.2,
+                py: 0.3,
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+                color: 'text.secondary',
+                borderColor: 'rgba(255,255,255,0.15)',
+                '&.Mui-selected': {
+                  color: 'primary.main',
+                  backgroundColor: 'rgba(129,182,76,0.12)',
+                },
+              },
+            }}
+          >
+            <ToggleButton value="fr">FR</ToggleButton>
+            <ToggleButton value="en">EN</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+
         {/* Title */}
         <Box sx={{ textAlign: 'center', mb: 1 }}>
           <Typography
@@ -177,7 +216,7 @@ const HomePage: React.FC = () => {
             Chesspawn
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
-            Draft your army. Then play.
+            {t('home.subtitle')}
           </Typography>
         </Box>
 
@@ -189,7 +228,7 @@ const HomePage: React.FC = () => {
           onClick={handlePlayLocal}
           sx={{ py: 1.5, fontSize: '1rem' }}
         >
-          Play Local
+          {t('home.playLocal')}
         </Button>
 
         <FormControlLabel
@@ -203,7 +242,7 @@ const HomePage: React.FC = () => {
           }
           label={
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              Normal mode (skip draft)
+              {t('home.normalMode')}
             </Typography>
           }
           sx={{ alignSelf: 'flex-start', ml: 0.5, mt: -1 }}
@@ -221,7 +260,7 @@ const HomePage: React.FC = () => {
           sx={{ py: 1.5, fontSize: '1rem' }}
           startIcon={hosting ? <CircularProgress size={18} /> : null}
         >
-          {hosting ? 'Creating game…' : 'Host'}
+          {hosting ? t('home.creating') : t('home.host')}
         </Button>
 
         {/* Join */}
@@ -229,7 +268,7 @@ const HomePage: React.FC = () => {
           <Box sx={{ display: 'flex', gap: 1 }}>
             <TextField
               size="small"
-              placeholder="GAME ID"
+              placeholder={t('home.gameIdPlaceholder')}
               value={joinId}
               onChange={(e) => {
                 setJoinId(e.target.value.toUpperCase().slice(0, 6));
@@ -249,7 +288,7 @@ const HomePage: React.FC = () => {
               disabled={!joinValid || joining}
               startIcon={joining ? <CircularProgress size={16} /> : null}
             >
-              Join
+              {t('home.join')}
             </Button>
           </Box>
           <FormControlLabel
@@ -262,7 +301,7 @@ const HomePage: React.FC = () => {
             }
             label={
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                Remember this game
+                {t('home.rememberGame')}
               </Typography>
             }
           />

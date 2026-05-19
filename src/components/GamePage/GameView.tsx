@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Chip, Alert, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { Color, GameState, PieceType } from '../../types/game';
 import ChessBoard from '../Board/ChessBoard';
 import DraftPanel, { DISPLAY_ORDER } from '../Board/DraftPanel';
@@ -15,8 +16,6 @@ interface GameViewProps {
   syncing?: boolean;
 }
 
-const COLOR_LABEL: Record<Color, string> = { w: 'White', b: 'Black' };
-
 const GameView: React.FC<GameViewProps> = ({
   state,
   myColor,
@@ -27,6 +26,8 @@ const GameView: React.FC<GameViewProps> = ({
   syncing = false,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const colorLabel = (c: Color) => (c === 'w' ? t('game.white') : t('game.black'));
   // Each player keeps their own selection independently
   const [selectedPiece, setSelectedPiece] = useState<Record<Color, PieceType | null>>({
     w: null,
@@ -96,30 +97,41 @@ const GameView: React.FC<GameViewProps> = ({
   // Status text
   let statusText = '';
   if (state.phase === 'draft') {
-    const who = isLocal
-      ? COLOR_LABEL[state.draftTurn]
-      : state.draftTurn === myColor
-        ? 'Your'
-        : "Opponent's";
     const mustPlaceKing =
       state.pool[state.draftTurn].length === 0 && !state.kingPlaced[state.draftTurn];
-    statusText = mustPlaceKing ? `${who} turn — place your King` : `${who} turn — place a piece`;
+    const action = mustPlaceKing ? t('game.actionPlaceKing') : t('game.actionPlacePiece');
+    if (isLocal) {
+      statusText = t('game.draftStatusLocal', { color: colorLabel(state.draftTurn), action });
+    } else if (state.draftTurn === myColor) {
+      statusText = t('game.draftStatusMine', { action });
+    } else {
+      statusText = t('game.draftStatusOpponent', { action });
+    }
   } else if (state.phase === 'chess') {
-    const who = isLocal
-      ? COLOR_LABEL[activeColor!]
-      : activeColor === myColor
-        ? 'Your'
-        : "Opponent's";
-    statusText = `${who} turn`;
+    if (isLocal) {
+      statusText = t('game.chessTurnLocal', { color: colorLabel(activeColor!) });
+    } else if (activeColor === myColor) {
+      statusText = t('game.chessTurnMine');
+    } else {
+      statusText = t('game.chessTurnOpponent');
+    }
   } else if (state.phase === 'finished') {
-    if (state.winner === 'draw') statusText = 'Draw!';
-    else if (state.winner) {
-      const winnerLabel = isLocal
-        ? COLOR_LABEL[state.winner]
-        : state.winner === myColor
-          ? 'You'
-          : 'Opponent';
-      statusText = `${winnerLabel} wins${state.endReason === 'king-blocked' ? ' — King blocked!' : state.endReason === 'checkmate' ? ' — Checkmate!' : ''}`;
+    if (state.winner === 'draw') {
+      statusText = t('game.draw');
+    } else if (state.winner) {
+      const reason =
+        state.endReason === 'king-blocked'
+          ? t('game.reasonKingBlocked')
+          : state.endReason === 'checkmate'
+            ? t('game.reasonCheckmate')
+            : '';
+      if (isLocal) {
+        statusText = t('game.winsLocal', { color: colorLabel(state.winner), reason });
+      } else if (state.winner === myColor) {
+        statusText = t('game.winsMine', { reason });
+      } else {
+        statusText = t('game.winsOpponent', { reason });
+      }
     }
   }
 
@@ -166,10 +178,10 @@ const GameView: React.FC<GameViewProps> = ({
           <Chip
             label={
               state.phase === 'draft'
-                ? 'Draft Phase'
+                ? t('game.draftPhase')
                 : state.phase === 'chess'
-                  ? 'Chess Phase'
-                  : 'Game Over'
+                  ? t('game.chessPhase')
+                  : t('game.gameOver')
             }
             color={
               state.phase === 'draft'
@@ -180,7 +192,7 @@ const GameView: React.FC<GameViewProps> = ({
             }
             size="small"
           />
-          {syncing && <Chip label="Syncing…" size="small" variant="outlined" />}
+          {syncing && <Chip label={t('game.syncing')} size="small" variant="outlined" />}
         </Box>
 
         <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -206,7 +218,7 @@ const GameView: React.FC<GameViewProps> = ({
                   selectedPiece={selectedPiece.w}
                   onSelectPiece={(p) => handleSelectPiece('w', p)}
                   kingPlaced={state.kingPlaced.w}
-                  label="White"
+                  label={t('game.white')}
                 />
                 <DraftPanel
                   color="b"
@@ -215,7 +227,7 @@ const GameView: React.FC<GameViewProps> = ({
                   selectedPiece={selectedPiece.b}
                   onSelectPiece={(p) => handleSelectPiece('b', p)}
                   kingPlaced={state.kingPlaced.b}
-                  label="Black"
+                  label={t('game.black')}
                 />
               </>
             ) : (
@@ -227,7 +239,7 @@ const GameView: React.FC<GameViewProps> = ({
                   selectedPiece={selectedPiece.b}
                   onSelectPiece={(p) => handleSelectPiece('b', p)}
                   kingPlaced={state.kingPlaced.b}
-                  label="Black"
+                  label={t('game.black')}
                 />
                 <DraftPanel
                   color="w"
@@ -236,7 +248,7 @@ const GameView: React.FC<GameViewProps> = ({
                   selectedPiece={selectedPiece.w}
                   onSelectPiece={(p) => handleSelectPiece('w', p)}
                   kingPlaced={state.kingPlaced.w}
-                  label="White"
+                  label={t('game.white')}
                 />
               </>
             )}
@@ -246,14 +258,14 @@ const GameView: React.FC<GameViewProps> = ({
         {/* Chess phase move count */}
         {state.phase === 'chess' && (
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Move {Math.ceil(state.chessMoves.length / 2)}
+            {t('game.moveCount', { count: Math.ceil(state.chessMoves.length / 2) })}
           </Typography>
         )}
 
         {/* Restart / Home */}
         <Box sx={{ mt: 'auto', pt: 2 }}>
           <Button variant="outlined" size="small" onClick={() => navigate('/')}>
-            ← Home
+            {t('game.home')}
           </Button>
         </Box>
       </Box>
